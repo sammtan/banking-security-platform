@@ -1,0 +1,149 @@
+{
+  "test_date": "2025-08-03T12:56:47.691538",
+  "model_type": "Isolation Forest",
+  "results": {
+    "performance": {
+      "batch_1": {
+        "total_time": 0.012566566467285156,
+        "transactions_per_second": 79.57623131213478,
+        "avg_time_ms": 12.566566467285156
+      },
+      "batch_10": {
+        "total_time": 0.14551138877868652,
+        "transactions_per_second": 68.72314314317595,
+        "avg_time_ms": 14.551138877868652
+      },
+      "batch_100": {
+        "total_time": 1.3917202949523926,
+        "transactions_per_second": 71.8535185286069,
+        "avg_time_ms": 13.917202949523926
+      },
+      "batch_1000": {
+        "total_time": 14.766487836837769,
+        "transactions_per_second": 67.72091041888191,
+        "avg_time_ms": 14.766487836837769
+      }
+    },
+    "accuracy": {
+      "confusion_matrix": {
+        "true_positives": 50,
+        "true_negatives": 0,
+        "false_positives": 50,
+        "false_negatives": 0
+      },
+      "accuracy": 0.5,
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1_score": 0.6666666666666666
+    },
+    "edge_cases": {
+      "Extreme High Amount": {
+        "risk_score": 0.664983950831489,
+        "reasons": [
+          "High transaction amount: $1,000,000.00",
+          "High transaction velocity"
+        ],
+        "expected_high_risk": true
+      },
+      "Zero Amount": {
+        "risk_score": 0.6603639518609751,
+        "reasons": [
+          "High transaction velocity"
+        ],
+        "expected_high_risk": false
+      },
+      "Rapid Sequential": {
+        "risk_score": 0.6480110493245892,
+        "reasons": [
+          "High transaction velocity"
+        ],
+        "expected_high_risk": false
+      },
+      "Unusual Time": {
+        "risk_score": 0.6632164678699732,
+        "reasons": [
+          "Unusual transaction time: 03:00",
+          "Risky location: International",
+          "High transaction velocity"
+        ],
+        "expected_high_risk": false
+      },
+      "High Risk Combo": {
+        "risk_score": 0.6603592855413749,
+        "reasons": [
+          "High transaction amount: $5,000.00",
+          "Unusual transaction time: 02:00",
+          "High-risk merchant: gambling",
+          "High transaction velocity"
+        ],
+        "expected_high_risk": true
+      }
+    },
+    "load_test": {
+      "total_transactions": 1000,
+      "total_time": 13.235347509384155,
+      "throughput_tps": 75.55525076247358,
+      "avg_latency_ms": 121.10608053207397,
+      "p95_latency_ms": 350.7370352745056,
+      "p99_latency_ms": 517.4761414527892
+    },
+    "patterns": {
+      "velocity_attack": {
+        "avg_score": 0.6498509934275473,
+        "max_score": 0.6517371656693289,
+        "score_trend": "increasing",
+        "scores": [
+          0.6496054979126875,
+          0.6517371656693289,
+          0.650271351481598,
+          0.6496032482061077,
+          0.6482938406053845,
+          0.650271351481598,
+          0.6482938406053845,
+          0.650271351481598,
+          0.650271351481598,
+          0.6498909353501875
+        ]
+      },
+      "amount_ladder": {
+        "avg_score": 0.6819228725533544,
+        "max_score": 0.68547863997081,
+        "score_trend": "increasing",
+        "scores": [
+          0.6810881707690937,
+          0.682318083999463,
+          0.6803023838441116,
+          0.6824302225579671,
+          0.680531307782552,
+          0.68547863997081,
+          0.6813112989494828
+        ]
+      },
+      "location_hopping": {
+        "avg_score": 0.663728942272925,
+        "max_score": 0.6711515957165476,
+        "score_trend": "increasing",
+        "scores": [
+          0.655450244627534,
+          0.6616450083518853,
+          0.6644335593776683,
+          0.6659643032909895,
+          0.6711515957165476
+        ]
+      },
+      "category_shift": {
+        "avg_score": 0.6723798243347426,
+        "max_score": 0.6793044910644724,
+        "score_trend": "increasing",
+        "scores": [
+          0.6480110493245892,
+          0.6793044910644724,
+          0.678317532862712,
+          0.6771092823214305,
+          0.6768683751197345,
+          0.6746682153155179
+        ]
+      }
+    }
+  }
+}
