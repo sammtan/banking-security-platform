@@ -117,7 +117,7 @@ banking-security-platform/
   - Amount-based (high-value transactions)
   - Velocity-based (rapid sequences)
   - Temporal-based (suspicious hours)
-  - Location-based (geographic anomalies)
+  - Location-based (keyword-based location risk scoring)
   - Merchant-based (high-risk categories)
 - **AI Model**: Isolation Forest for anomaly detection
 - **Visual Alerts**: Tile-based fraud alerts with severity indicators
@@ -136,7 +136,7 @@ banking-security-platform/
 
 ## Performance Specifications
 
-- **Transaction Processing**: ~1000 transactions/second
+- **ML Inference**: Sub-millisecond per transaction (inference-only benchmark; full pipeline throughput is lower due to database writes and UI updates)
 - **Database**: Optimized SQLite with proper indexing
 - **UI Updates**: Non-blocking with incremental refresh
 - **Memory Usage**: Efficient pagination prevents memory overflow
@@ -147,66 +147,40 @@ banking-security-platform/
 - Local database (no network exposure)
 - Prepared statements (SQL injection prevention)
 - Rule-based + AI hybrid detection
-- Automatic transaction blocking
+- Automatic flagging and blocking status assignment
 - Comprehensive audit trail
 
-## AI Model Performance Test Results
+## AI Model Sanity Checks
 
-### Quick Stress Test Summary (2025-08-03)
+> **Note:** All data below is **synthetic** (randomly generated for demonstration). These results are not derived from a real-world dataset, cross-validation, or hold-out test set and should not be interpreted as production accuracy measurements.
 
-**Performance Metrics:**
-- Single Transaction: **31,300+ TPS** (0.03ms latency)
-- Batch (10): **267,153+ TPS** 
-- Batch (100): **390,167+ TPS**
-- **Verdict: EXCELLENT** (Avg 229,540 TPS)
+### ML Inference Benchmark (2025-08-03)
 
-**Detection Accuracy:**
-- Normal transactions correctly identified as low risk ✓
-- High-risk transactions correctly flagged ✓
-- Medium-risk transactions properly detected ✓
-- **Overall Accuracy: 100%**
+The following figures measure **scikit-learn `.predict()` inference time only** — pure matrix math without database writes, Qt signal emission, or UI re-rendering. Actual end-to-end throughput is far lower (the monitoring engine uses a 1–3 second timer between transactions).
+
+| Batch size | Inference TPS |
+|-----------|--------------|
+| 1         | ~31,300       |
+| 10        | ~267,153      |
+| 100       | ~390,167      |
+
+### Basic Sanity Checks on Synthetic Data
+
+These three synthetic scenarios verify that the model produces sensible directional outputs. They are not a substitute for evaluation on a representative dataset.
 
 **Test Scenarios:**
-1. **Normal Transaction** ($50, grocery, local) → Risk: 0.000 (Low)
-2. **High Risk** ($10,000, gambling, offshore, 3AM) → Risk: 0.900 (High)
-3. **Medium Risk** ($2,000, online, international) → Risk: 0.300 (Medium)
+1. **Normal Transaction** ($50, grocery, local) → Risk: 0.000 (Low) ✓
+2. **High Risk** ($10,000, gambling, offshore, 3AM) → Risk: 0.900 (High) ✓
+3. **Medium Risk** ($2,000, online, international) → Risk: 0.300 (Medium) ✓
 
 **Edge Case Handling:**
 - Zero amount transactions: Handled
 - Extreme amounts ($1M): Detected as medium risk
 - Unknown locations: Processed successfully
 
-**Overall Test Result: PASS**
+**Overall Sanity Check Result: PASS**
 
-The AI model demonstrates excellent performance with sub-millisecond latency and 100% accuracy on test scenarios, making it suitable for real-time fraud detection in production environments.
-
-### Detailed Test Results (JSON)
-```json
-{
-  "test_date": "2025-08-03T12:57:33",
-  "model_type": "Isolation Forest",
-  "performance": {
-    "1_transaction": "31,300.78 TPS",
-    "10_transactions": "267,153.12 TPS",
-    "100_transactions": "390,167.81 TPS"
-  },
-  "detection_accuracy": {
-    "normal_correctly_low": true,
-    "high_risk_correctly_high": true,
-    "medium_risk_detected": true
-  },
-  "edge_case_handling": {
-    "zero_amount": "Handled",
-    "extreme_amount": "Detected (0.3 risk score)",
-    "unknown_location": "Processed successfully"
-  },
-  "verdict": {
-    "performance": "EXCELLENT",
-    "accuracy": "100%",
-    "overall": "PASS"
-  }
-}
-```
+The model correctly classifies these three obvious synthetic cases, confirming the pipeline is wired up correctly. No precision/recall/F1 metrics from a representative dataset have been measured.
 
 ## Portfolio Demonstration
 
@@ -217,7 +191,7 @@ This project showcases:
 - **Professional UI/UX**: Banking-grade interface design
 - **Data Visualization**: Real-time charts and metrics
 - **Report Generation**: Multi-format export capabilities
-- **Testing Practices**: Comprehensive test coverage
+- **Demo & Validation Scripts**: `scripts/train_model.py` for model training and basic synthetic-data sanity checks
 
 ---
 
